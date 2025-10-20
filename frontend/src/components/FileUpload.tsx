@@ -1,5 +1,4 @@
 import React, { useCallback, useRef, useState } from 'react'
-import './FileUpload.css'
 
 type Detection = {
   id: string
@@ -101,9 +100,8 @@ const FileUpload: React.FC<FileUploadProps> = ({ onResult }) => {
   }, [preview])
 
   return (
-    <div className="file-upload-hero">
+    <div className="w-full max-w-3xl mx-auto">
       <div
-        className="dropzone"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onClick={() => inputRef.current?.click()}
@@ -111,48 +109,59 @@ const FileUpload: React.FC<FileUploadProps> = ({ onResult }) => {
         tabIndex={0}
         onKeyDown={(e) => e.key === 'Enter' && inputRef.current?.click()}
         aria-label="File upload dropzone"
+        className="rounded-2xl border-2 border-dashed border-slate-200 bg-white/60 p-6 hover:shadow-lg transition-shadow cursor-pointer flex flex-col md:flex-row gap-6 items-center"
       >
-        {preview ? (
-          <div style={{ textAlign: 'center' }}>
-            <img src={preview} alt="preview" className="preview" />
-            {file && <div className="filename">{file.name}</div>}
-          </div>
-        ) : (
-          <div className="drop-hint">
-            <p>Drag & drop an image here, or click to browse</p>
+        <div className="w-full md:w-1/2 flex items-center justify-center">
+          {preview ? (
+            <img src={preview} alt="preview" className="max-h-64 object-contain rounded-lg shadow-sm" />
+          ) : (
+            <div className="text-center text-slate-500">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" className="mx-auto mb-2">
+                <path d="M12 3v12" stroke="#0b63ff" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M9 8l3-3 3 3" stroke="#0b63ff" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="#93c5fd" strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <div className="text-lg font-medium">Drag & drop an image, or click to choose</div>
+              <div className="text-sm text-slate-400 mt-1">JPEG, PNG, WEBP — up to 10MB</div>
+            </div>
+          )}
+        </div>
+
+        <div className="w-full md:w-1/2 flex flex-col gap-4">
+          {file && (
+            <div className="text-sm text-slate-600">Selected file: <span className="font-medium">{file.name}</span></div>
+          )}
+
+          <div className="flex gap-3 justify-end">
             <button
-              type="button"
-              onClick={() => inputRef.current?.click()}
-              className="browse-button"
+              onClick={clear}
+              disabled={uploading}
+              className="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50"
             >
-              Choose file
+              Clear
+            </button>
+
+            <button
+              onClick={handleUpload}
+              disabled={!file || uploading}
+              className="px-4 py-2 rounded-lg bg-gradient-to-r from-brand to-brand/80 text-white shadow hover:opacity-95 disabled:opacity-50"
+            >
+              {uploading ? 'Uploading...' : 'Upload & Analyze'}
             </button>
           </div>
-        )}
+        </div>
+
         <input
           ref={inputRef}
-          className="file-input-hidden"
           type="file"
           name="file"
           accept={ACCEPTED_TYPES.join(',')}
           onChange={handleFileChange}
+          className="hidden"
         />
       </div>
 
-      <div className="controls">
-        <button
-          className="upload-button primary"
-          onClick={handleUpload}
-          disabled={!file || uploading}
-        >
-          {uploading ? 'Uploading...' : 'Upload & Analyze'}
-        </button>
-        <button className="upload-button" onClick={clear} disabled={uploading}>
-          Clear
-        </button>
-      </div>
-
-      {error && <div className="error">{error}</div>}
+      {error && <div className="mt-4 text-sm text-red-600">{error}</div>}
     </div>
   )
 }
