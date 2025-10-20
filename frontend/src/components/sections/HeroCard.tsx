@@ -4,11 +4,13 @@ import { Card } from '../ui/Card';
 import { FileUploadArea } from '../upload/FileUploadArea';
 import { DetectionPreview } from '../upload/DetectionPreview';
 import { AnalyzeButton } from '../upload/AnalyzeButton';
+import type { Detection } from '../../services/api';
 
 interface HeroCardProps {
   previewUrl: string | null;
   dragActive: boolean;
   isAnalyzing: boolean;
+  detections: Detection[];
   onDragEnter: (e: React.DragEvent) => void;
   onDragLeave: (e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
@@ -22,6 +24,7 @@ export const HeroCard = ({
   previewUrl, 
   dragActive, 
   isAnalyzing,
+  detections,
   onDragEnter,
   onDragLeave,
   onDragOver,
@@ -49,7 +52,10 @@ export const HeroCard = ({
           onRemoveImage={onRemoveImage}
         />
 
-        <DetectionPreview previewUrl={previewUrl} />
+        <DetectionPreview 
+          previewUrl={previewUrl} 
+          detections={detections} 
+        />
 
         <AnalyzeButton
           previewUrl={previewUrl}

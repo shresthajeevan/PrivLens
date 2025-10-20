@@ -1,15 +1,23 @@
 import { CheckCircle } from 'lucide-react';
+import type { Detection } from '../../services/api';
 
 interface DetectionPreviewProps {
   previewUrl: string | null;
+  detections: Detection[];
 }
 
-export const DetectionPreview = ({ previewUrl }: DetectionPreviewProps) => {
+export const DetectionPreview = ({ previewUrl, detections }: DetectionPreviewProps) => {
+  // Calculate real counts from detections
+  const faceCount = detections.filter(d => d.type === 'face').length;
+  const textCount = detections.filter(d => d.type === 'text').length;
+  const plateCount = detections.filter(d => d.type === 'license_plate').length;
+  const documentCount = detections.filter(d => d.type === 'document').length;
+
   const detectionItems = [
-    { label: 'Faces', count: 0, color: 'bg-blue-500' },
-    { label: 'Text', count: 0, color: 'bg-green-500' },
-    { label: 'Plates', count: 0, color: 'bg-amber-500' },
-    { label: 'Documents', count: 0, color: 'bg-purple-500' }
+    { label: 'Faces', count: faceCount, color: 'bg-blue-500' },
+    { label: 'Text', count: textCount, color: 'bg-green-500' },
+    { label: 'Plates', count: plateCount, color: 'bg-amber-500' },
+    { label: 'Documents', count: documentCount, color: 'bg-purple-500' }
   ];
 
   return (
@@ -20,7 +28,14 @@ export const DetectionPreview = ({ previewUrl }: DetectionPreviewProps) => {
           previewUrl ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'
         }`}>
           <CheckCircle className="w-4 h-4" />
-          <span>{previewUrl ? 'Ready to analyze' : 'Upload an image'}</span>
+          <span>
+            {previewUrl 
+              ? detections.length > 0 
+                ? `${detections.length} items detected` 
+                : 'Ready to analyze'
+              : 'Upload an image'
+            }
+          </span>
         </div>
       </div>
 

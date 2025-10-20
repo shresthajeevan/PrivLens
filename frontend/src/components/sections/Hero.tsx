@@ -3,17 +3,25 @@ import { motion } from 'framer-motion';
 import { Upload, Sparkles, CheckCircle } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { HeroCard } from './HeroCard';
+import type { AnalysisResponse, Detection } from '../../services/api'; // Import types
 
-export const Hero = () => {
+interface HeroProps {
+  analyzeImage: (file: File) => Promise<AnalysisResponse>;
+}
+
+export const Hero = ({ analyzeImage }: HeroProps) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [detections, setDetections] = useState<Detection[]>([]);
 
   const handleFile = (file: File) => {
     if (file && file.type.startsWith('image/')) {
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
-      console.log('File selected:', file);
+      setUploadedImage(file);
+      setDetections([]); // Clear previous detections
     }
   };
 
@@ -48,14 +56,29 @@ export const Hero = () => {
       URL.revokeObjectURL(previewUrl);
     }
     setPreviewUrl(null);
+    setUploadedImage(null);
+    setDetections([]);
   };
 
   const handleAnalyze = async () => {
-    if (!previewUrl) return;
+    if (!uploadedImage) return;
     
     setIsAnalyzing(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsAnalyzing(false);
+    try {
+      const result = await analyzeImage(uploadedImage);
+      if (result.success) {
+        setDetections(result.detections);
+        console.log('Analysis result:', result);
+      } else {
+        console.error('Analysis failed:', result);
+        // Handle error - show toast or message to user
+      }
+    } catch (error) {
+      console.error('Analysis error:', error);
+      // Handle error - show toast or message to user
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const handleGetStarted = () => {
@@ -83,6 +106,7 @@ export const Hero = () => {
             previewUrl={previewUrl}
             dragActive={dragActive}
             isAnalyzing={isAnalyzing}
+            detections={detections}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
@@ -168,10 +192,6 @@ const TrustBadges = () => {
           ))}
         </div>
         <span>Trusted by 10K+ users</span>
-      </div>
-      <div className="flex items-center space-x-2">
-        <CheckCircle className="w-4 h-4 text-green-500" />
-        <span>SOC 2 & GDPR Compliant</span>
       </div>
     </div>
   );

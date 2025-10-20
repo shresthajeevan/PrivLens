@@ -8,6 +8,7 @@
     "dev": "node --loader ts-node/esm src/server.ts"
   },
   "dependencies": {
+    "@google-cloud/vision": "^5.3.4",
     "@types/multer": "^2.0.0",
     "axios": "^1.12.2",
     "cors": "^2.8.5",
