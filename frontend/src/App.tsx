@@ -1,14 +1,34 @@
+import { useState, useEffect } from 'react';
+import { Navbar } from './components/layout/Navbar';
+import { Footer } from './components/layout/Footer';
+import { Hero } from './components/sections/Hero';
+import { Features } from './components/sections/Features';
+import { Stats } from './components/sections/Stats';
+import { CTA } from './components/sections/CTA';
+
 const App = () => {
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setIsDark(true);
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    setIsDark(!isDark);
+    document.documentElement.classList.toggle('dark');
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900/70 flex items-center justify-center">
-      <div className="bg-white/80 dark:bg-slate-800 backdrop-blur-sm rounded-2xl shadow-xl p-6 text-center">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-          🎉 Tailwind is Working!
-        </h1>
-        <p className="text-slate-600 dark:text-slate-300 mt-2">
-          You can now build your PrivLens UI with TailwindCSS.
-        </p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <Navbar isDark={isDark} onToggleDarkMode={toggleDarkMode} />
+      <Hero />
+      <Features />
+      <Stats />
+      <CTA />
+      <Footer />
     </div>
   );
 };
