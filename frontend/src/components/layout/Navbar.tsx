@@ -46,11 +46,8 @@ export const Navbar = ({ isDark, onToggleDarkMode }: NavbarProps) => {
             >
               {isDark ? '🌙' : '☀️'}
             </button>
-            <button className="px-4 py-2 text-slate-700 dark:text-slate-200 font-medium hover:text-slate-900 dark:hover:text-white transition-colors duration-200">
-              Sign In
-            </button>
             <Button>
-              Get Started
+              Sign In
             </Button>
           </div>
         </div>

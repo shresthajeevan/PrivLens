@@ -19,15 +19,17 @@ export const CTA = () => {
             Join thousands of users protecting their privacy with AI-powered detection and masking
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              variant="secondary" 
-              size="lg"
-              icon={ArrowRight}
-              iconPosition="right"
-              className="bg-white text-blue-600"
-            >
-              Click here to Get Started
-            </Button>
+            <a href="#hero" className="inline-block">
+              <Button 
+                variant="secondary" 
+                size="lg"
+                icon={ArrowRight}
+                iconPosition="right"
+                className="bg-white text-blue-600"
+              >
+                Click here to Get Started
+              </Button>
+            </a>
           </div>
         </motion.div>
       </div>

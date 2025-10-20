@@ -9,6 +9,7 @@ interface ButtonProps {
   iconPosition?: 'left' | 'right';
   className?: string;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 export const Button = ({ 
@@ -18,7 +19,8 @@ export const Button = ({
   icon: Icon,
   iconPosition = 'left',
   className = '',
-  onClick 
+  onClick,
+  disabled = false
 }: ButtonProps) => {
   const baseClasses = "font-semibold rounded-2xl transition-all duration-200 flex items-center justify-center space-x-3";
   
@@ -34,7 +36,11 @@ export const Button = ({
     lg: "px-8 py-4 text-lg"
   };
 
-  const classes = `${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`;
+  const disabledClasses = "opacity-50 cursor-not-allowed hover:shadow-none";
+
+  const classes = `${baseClasses} ${variants[variant]} ${sizes[size]} ${
+    disabled ? disabledClasses : ''
+  } ${className}`;
 
   const content = (
     <>
@@ -46,10 +52,11 @@ export const Button = ({
 
   return (
     <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={disabled ? {} : { scale: 1.02 }}
+      whileTap={disabled ? {} : { scale: 0.98 }}
       className={classes}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
     >
       {content}
     </motion.button>
